@@ -6,25 +6,6 @@ require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-const getExchangeRateFunctionDeclaration = {
-  name: "getExchangeRate",
-  parameters: {
-    type: "OBJECT",
-    description: "Get the exchange rate for currencies between countries",
-    properties: {
-      currencyFrom: {
-        type: "STRING",
-        description: "The currency to convert from.",
-      },
-      currencyTo: {
-        type: "STRING",
-        description: "The currency to convert to.",
-      },
-    },
-    required: ["currencyTo", "currencyFrom"],
-  },
-};
-
 const decrementCounterFunctionDeclaration = {
   name: "decrementCounter",
   parameters: {
@@ -55,9 +36,6 @@ const incrementCounterCounterFunctionDeclaration = {
 };
 
 const functions = {
-  getExchangeRate: ({ currencyFrom, currencyTo }) => {
-    return makeApiRequest(currencyFrom, currencyTo);
-  },
   decrementCounter: ({ number }) => {
     return decrementCounter(number);
   },
