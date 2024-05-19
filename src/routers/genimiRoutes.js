@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/prompt", handleGeminiRequest);
 router.get("/test", (req, res) => {
-  res.send("Hello World!");
+  handleGeminiRequest(req, res);
 });
 
 module.exports = router;
