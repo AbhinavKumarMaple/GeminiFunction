@@ -1,6 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { decrementCounter } = require("../services/decrementCounter");
 const { incrementCounter } = require("../services/incrementCounter");
+const { getCurrentProductNumber } = require("../services/getProductNumber");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
@@ -19,7 +20,7 @@ const decrementCounterFunctionDeclaration = {
     required: ["number"],
   },
 };
-const incrementCounterCounterFunctionDeclaration = {
+const incrementCounterFunctionDeclaration = {
   name: "incrementCounter",
   parameters: {
     type: "NUMBER",
@@ -34,12 +35,24 @@ const incrementCounterCounterFunctionDeclaration = {
   },
 };
 
+const getProductnumberFunctionDeclaration = {
+  name: "getCurrentProductNumber",
+  parameters: {
+    description: "give product amount/number",
+    properties: {},
+    required: [],
+  },
+};
+
 const functions = {
   decrementCounter: ({ number }) => {
     return decrementCounter(number);
   },
   incrementCounter: ({ number }) => {
     return incrementCounter(number);
+  },
+  getCurrentProductNumber: () => {
+    return getCurrentProductNumber();
   },
 };
 
@@ -48,7 +61,8 @@ const generativeModel = genAI.getGenerativeModel({
   tools: {
     functionDeclarations: [
       decrementCounterFunctionDeclaration,
-      incrementCounterCounterFunctionDeclaration,
+      incrementCounterFunctionDeclaration,
+      getProductnumberFunctionDeclaration,
     ],
   },
 });
