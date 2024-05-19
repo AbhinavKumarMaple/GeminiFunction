@@ -1,5 +1,4 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { makeApiRequest } = require("../untils/apiRequest");
 const { decrementCounter } = require("../services/decrementCounter");
 const { incrementCounter } = require("../services/incrementCounter");
 require("dotenv").config();
