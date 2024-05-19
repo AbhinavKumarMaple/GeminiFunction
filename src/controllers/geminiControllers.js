@@ -48,7 +48,6 @@ const generativeModel = genAI.getGenerativeModel({
   model: "gemini-1.0-pro",
   tools: {
     functionDeclarations: [
-      getExchangeRateFunctionDeclaration,
       decrementCounterFunctionDeclaration,
       incrementCounterCounterFunctionDeclaration,
     ],
