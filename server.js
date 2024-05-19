@@ -1,10 +1,25 @@
-const app = require("./src/app");
+const express = require("express");
+const cors = require("cors");
+const connectDB = require("./src/config/db");
+const { handleGeminiRequest } = require("./src/controllers/geminiControllers");
+
+const app = express();
+app.use(express.json());
+app.use(cors()); // Enable CORS
+
+connectDB();
+
+// Define routes
+// app.use("/api/gemini", geminiRoutes);
+
+app.post("/api/gemini/webhook", handleGeminiRequest);
+
+// router.post("/prompt", handleGeminiRequest);
+// router.post("/test", (req, res) => {
+//   handleGeminiRequest(req, res);
+// });
+
 const PORT = process.env.PORT || 3000;
-
-//create a basic express endpoint
-// var express = require("express");
-// var app = express();
-
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
