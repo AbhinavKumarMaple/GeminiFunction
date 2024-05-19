@@ -60,19 +60,15 @@ const handleGeminiRequest = async (req, res) => {
     if (!query) {
       return res.status(400).json({ error: "Query is required" });
     }
-    console.log("1");
+
     const chat = generativeModel.startChat();
-    console.log("2");
+
     const result = await chat.sendMessage(query);
-    console.log("3");
 
     const call = result.response.functionCalls()[0];
-    console.log("4");
 
     if (call) {
-      console.log(call.name, call.args);
       const apiResponse = await functions[call.name](call.args);
-      console.log("5");
       const result2 = await chat.sendMessage([
         {
           functionResponse: {
@@ -81,7 +77,6 @@ const handleGeminiRequest = async (req, res) => {
           },
         },
       ]);
-      console.log(call.name, apiResponse);
 
       res.status(200).json({ message: result2.response.text() });
     } else {
