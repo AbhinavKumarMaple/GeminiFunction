@@ -16,7 +16,8 @@ app.post("/api/gemini/webhook", handleGeminiRequest);
 
 // router.post("/prompt", handleGeminiRequest);
 router.get("/test", (req, res) => {
-  handleGeminiRequest(req, res);
+  console.log("test");
+  res.send("test");
 });
 
 const PORT = process.env.PORT || 3000;
