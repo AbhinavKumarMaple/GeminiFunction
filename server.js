@@ -15,7 +15,7 @@ connectDB();
 app.post("/api/gemini/webhook", handleGeminiRequest);
 
 // router.post("/prompt", handleGeminiRequest);
-router.get("/test", (req, res) => {
+app.get("/test", (req, res) => {
   console.log("test");
   res.send("test");
 });
