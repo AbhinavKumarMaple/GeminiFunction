@@ -35,10 +35,11 @@ const incrementCounterFunctionDeclaration = {
   },
 };
 
-const getProductnumberFunctionDeclaration = {
+const getCurrentProductNumberFunctionDeclaration = {
   name: "getCurrentProductNumber",
   parameters: {
-    description: "give product amount/number",
+    type: "OBJECT",
+    description: "Retrieve the current product count",
     properties: {},
     required: [],
   },
@@ -62,7 +63,7 @@ const generativeModel = genAI.getGenerativeModel({
     functionDeclarations: [
       decrementCounterFunctionDeclaration,
       incrementCounterFunctionDeclaration,
-      getProductnumberFunctionDeclaration,
+      getCurrentProductNumberFunctionDeclaration,
     ],
   },
 });
@@ -70,16 +71,17 @@ const generativeModel = genAI.getGenerativeModel({
 const handleGeminiRequest = async (req, res) => {
   try {
     const { query } = req.body;
+    console.log("query", query);
     if (!query) {
       return res.status(400).json({ error: "Query is required" });
     }
-
+    console.log(2);
     const chat = generativeModel.startChat();
-
+    console.log(3);
     const result = await chat.sendMessage(query);
-
+    console.log(4);
     const call = result.response.functionCalls()[0];
-
+    console.log(5);
     if (call) {
       const apiResponse = await functions[call.name](call.args);
       const result2 = await chat.sendMessage([
@@ -90,7 +92,7 @@ const handleGeminiRequest = async (req, res) => {
           },
         },
       ]);
-
+      console.log(6);
       res.status(200).json({ message: result2.response.text() });
     } else {
       res.status(200).json({ message: result.response.text() });
