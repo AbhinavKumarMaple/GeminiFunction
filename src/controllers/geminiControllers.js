@@ -1,59 +1,151 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { decrementCounter } = require("../services/decrementCounter");
-const { incrementCounter } = require("../services/incrementCounter");
-const { getCurrentProductNumber } = require("../services/getProductNumber");
+// const { decrementCounter } = require("../services/decrementCounter");
+// const { incrementCounter } = require("../services/incrementCounter");
+// const { getCurrentProductNumber } = require("../services/getProductNumber"); 
+const { increaseInventory, decreaseInventory, getInventory,createProduct } = require("../services/inventoryManagement");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-const decrementCounterFunctionDeclaration = {
-  name: "decrementCounter",
+// // Existing function declarations
+// const decrementCounterFunctionDeclaration = {
+//   name: "decrementCounter",
+//   parameters: {
+//     type: "NUMBER",
+//     description: "decrement the number of the product",
+//     properties: {
+//       number: {
+//         type: "NUMBER",
+//         description: "number which will be use to decrement",
+//       },
+//     },
+//     required: ["number"],
+//   },
+// };
+
+// const incrementCounterFunctionDeclaration = {
+//   name: "incrementCounter",
+//   parameters: {
+//     type: "NUMBER",
+//     description: "increment the number of the product",
+//     properties: {
+//       number: {
+//         type: "NUMBER",
+//         description: "number which will be use to increment",
+//       },
+//     },
+//     required: ["number"],
+//   },
+// };
+
+// const getCurrentProductNumberFunctionDeclaration = {
+//   name: "getCurrentProductNumber",
+//   parameters: {
+//     type: "OBJECT",
+//     description: "Retrieve the current product count",
+//     properties: {},
+//     required: [],
+//   },
+// };
+
+// New function declarations
+const createProductFunctionDeclaration = {
+  name: "createProduct",
   parameters: {
-    type: "NUMBER",
-    description: "decrement the number of the product",
+    type: "OBJECT",
+    description: "Create a new product",
     properties: {
-      number: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      price: {
         type: "NUMBER",
-        description: "number which will be use to decrement",
+        description: "Price of the product",
+      },
+      inventory: {
+        type: "NUMBER",
+        description: "Initial inventory value of the product",
       },
     },
-    required: ["number"],
-  },
-};
-const incrementCounterFunctionDeclaration = {
-  name: "incrementCounter",
-  parameters: {
-    type: "NUMBER",
-    description: "increment the number of the product",
-    properties: {
-      number: {
-        type: "NUMBER",
-        description: "number which will be use to increment",
-      },
-    },
-    required: ["number"],
+    required: ["name", "price","inventory"],
   },
 };
 
-const getCurrentProductNumberFunctionDeclaration = {
-  name: "getCurrentProductNumber",
+const increaseInventoryFunctionDeclaration = {
+  name: "increaseInventory",
   parameters: {
     type: "OBJECT",
-    description: "Retrieve the current product count",
-    properties: {},
-    required: [],
+    description: "Increase the inventory of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      quantity: {
+        type: "NUMBER",
+        description: "Quantity to increase",
+      },
+    },
+    required: ["name", "quantity"],
+  },
+};
+
+const decreaseInventoryFunctionDeclaration = {
+  name: "decreaseInventory",
+  parameters: {
+    type: "OBJECT",
+    description: "Decrease the inventory of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      quantity: {
+        type: "NUMBER",
+        description: "Quantity to decrease",
+      },
+    },
+    required: ["name", "quantity"],
+  },
+};
+
+const getInventoryFunctionDeclaration = {
+  name: "getInventory",
+  parameters: {
+    type: "OBJECT",
+    description: "Get the current inventory of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+    },
+    required: ["name"],
   },
 };
 
 const functions = {
-  decrementCounter: ({ number }) => {
-    return decrementCounter(number);
+  // decrementCounter: ({ number }) => {
+  //   return decrementCounter(number);
+  // },
+  // incrementCounter: ({ number }) => {
+  //   return incrementCounter(number);
+  // },
+  // getCurrentProductNumber: () => {
+  //   return getCurrentProductNumber();
+  // },
+  createProduct: ({ name, price, inventory }) => {
+    return createProduct(name, price, inventory);
   },
-  incrementCounter: ({ number }) => {
-    return incrementCounter(number);
+  increaseInventory: ({ name, quantity }) => {
+    return increaseInventory(name, quantity);
   },
-  getCurrentProductNumber: () => {
-    return getCurrentProductNumber();
+  decreaseInventory: ({ name, quantity }) => {
+    return decreaseInventory(name, quantity);
+  },
+  getInventory: ({ name }) => {
+    return getInventory(name);
   },
 };
 
@@ -61,9 +153,10 @@ const generativeModel = genAI.getGenerativeModel({
   model: "gemini-1.0-pro",
   tools: {
     functionDeclarations: [
-      decrementCounterFunctionDeclaration,
-      incrementCounterFunctionDeclaration,
-      getCurrentProductNumberFunctionDeclaration,
+      createProductFunctionDeclaration,
+      increaseInventoryFunctionDeclaration,
+      decreaseInventoryFunctionDeclaration,
+      getInventoryFunctionDeclaration,
     ],
   },
 });
