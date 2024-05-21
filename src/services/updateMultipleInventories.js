@@ -11,7 +11,7 @@ const updateMultipleInventories = async (inventoryUpdates) => {
         continue;
       }
 
-      product.inventory += quantity;
+      product.inventory = quantity;
       product.lastModified = Date.now();
       await product.save();
 
