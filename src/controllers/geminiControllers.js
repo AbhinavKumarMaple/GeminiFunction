@@ -219,6 +219,7 @@ const handleGeminiRequest = async (req, res) => {
 const updateInventories = async (req,res)=>{
   try {
     const { data } = req.body;
+    // console.log("reacttime data", typeof JSON.stringify(data), JSON.parse(JSON.stringify(data)) )
     const result = await updateMultipleInventories(data)
     if(result.success==true){
       res.status(200).json({ message: "done" });
