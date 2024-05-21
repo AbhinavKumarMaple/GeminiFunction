@@ -1,5 +1,29 @@
 const Product = require("../models/Product");
 
+const updateProductPrice = async (name, newPrice) => {
+    try {
+      const priceValue = Number(newPrice);
+      if (isNaN(priceValue) || priceValue <= 0) {
+        return { success: false, message: "Invalid price" };
+      }
+  
+      const product = await Product.findOne({ name });
+      if (!product) {
+        return { success: false, message: "Product not found" };
+      }
+  
+      product.price = priceValue;
+      product.lastModified = Date.now();
+      await product.save();
+  
+      console.log(`Updated price for ${name} to ${priceValue}`);
+      return { success: true, price: product.price };
+    } catch (error) {
+      console.error("Error updating product price:", error);
+      return { success: false, message: "Failed to update product price" };
+    }
+  };
+
 const createProduct = async (name, price, inventory = 0) => {
   try {
     const product = new Product({ name, price, inventory });
@@ -83,4 +107,4 @@ const getInventory = async (name) => {
   }
 };
 
-module.exports = { increaseInventory, decreaseInventory, getInventory, createProduct };
+module.exports = { increaseInventory, decreaseInventory, getInventory, createProduct,updateProductPrice };
