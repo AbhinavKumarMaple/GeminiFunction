@@ -1,11 +1,13 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { decrementCounter } = require("../services/decrementCounter");
-const { incrementCounter } = require("../services/incrementCounter");
-const { getCurrentProductNumber } = require("../services/getProductNumber");
+// const { decrementCounter } = require("../services/decrementCounter");
+// const { incrementCounter } = require("../services/incrementCounter");
+// const { getCurrentProductNumber } = require("../services/getProductNumber"); 
+const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice } = require("../services/inventoryManagement");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
+// Existing function declarations
 const decrementCounterFunctionDeclaration = {
   name: "decrementCounter",
   parameters: {
@@ -20,6 +22,7 @@ const decrementCounterFunctionDeclaration = {
     required: ["number"],
   },
 };
+
 const incrementCounterFunctionDeclaration = {
   name: "incrementCounter",
   parameters: {
@@ -45,6 +48,102 @@ const getCurrentProductNumberFunctionDeclaration = {
   },
 };
 
+// New function declarations
+const createProductFunctionDeclaration = {
+  name: "createProduct",
+  parameters: {
+    type: "OBJECT",
+    description: "Create a new product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      price: {
+        type: "NUMBER",
+        description: "Price of the product",
+      },
+      inventory: {
+        type: "NUMBER",
+        description: "Initial inventory value of the product",
+      },
+    },
+    required: ["name", "price"],
+  },
+};
+
+const increaseInventoryFunctionDeclaration = {
+  name: "increaseInventory",
+  parameters: {
+    type: "OBJECT",
+    description: "Increase the inventory of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      quantity: {
+        type: "NUMBER",
+        description: "Quantity to increase",
+      },
+    },
+    required: ["name", "quantity"],
+  },
+};
+
+const decreaseInventoryFunctionDeclaration = {
+  name: "decreaseInventory",
+  parameters: {
+    type: "OBJECT",
+    description: "Decrease the inventory of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      quantity: {
+        type: "NUMBER",
+        description: "Quantity to decrease",
+      },
+    },
+    required: ["name", "quantity"],
+  },
+};
+
+const getInventoryFunctionDeclaration = {
+  name: "getInventory",
+  parameters: {
+    type: "OBJECT",
+    description: "Get the current inventory of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+    },
+    required: ["name"],
+  },
+};
+
+const updateProductPriceFunctionDeclaration = {
+  name: "updateProductPrice",
+  parameters: {
+    type: "OBJECT",
+    description: "Update the price of a product",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product",
+      },
+      newPrice: {
+        type: "NUMBER",
+        description: "New price of the product",
+      },
+    },
+    required: ["name", "newPrice"],
+  },
+};
+
 const functions = {
   decrementCounter: ({ number }) => {
     return decrementCounter(number);
@@ -55,6 +154,21 @@ const functions = {
   getCurrentProductNumber: () => {
     return getCurrentProductNumber();
   },
+  createProduct: ({ name, price, inventory }) => {
+    return createProduct(name, price, inventory);
+  },
+  increaseInventory: ({ name, quantity }) => {
+    return increaseInventory(name, quantity);
+  },
+  decreaseInventory: ({ name, quantity }) => {
+    return decreaseInventory(name, quantity);
+  },
+  getInventory: ({ name }) => {
+    return getInventory(name);
+  },
+  updateProductPrice: ({ name, newPrice }) => {
+    return updateProductPrice(name, newPrice);
+  },
 };
 
 const generativeModel = genAI.getGenerativeModel({
@@ -64,6 +178,11 @@ const generativeModel = genAI.getGenerativeModel({
       decrementCounterFunctionDeclaration,
       incrementCounterFunctionDeclaration,
       getCurrentProductNumberFunctionDeclaration,
+      createProductFunctionDeclaration,
+      increaseInventoryFunctionDeclaration,
+      decreaseInventoryFunctionDeclaration,
+      getInventoryFunctionDeclaration,
+      updateProductPriceFunctionDeclaration,
     ],
   },
 });
@@ -71,17 +190,12 @@ const generativeModel = genAI.getGenerativeModel({
 const handleGeminiRequest = async (req, res) => {
   try {
     const { query } = req.body;
-    console.log("query", query);
     if (!query) {
       return res.status(400).json({ error: "Query is required" });
     }
-    console.log(2);
     const chat = generativeModel.startChat();
-    console.log(3);
     const result = await chat.sendMessage(query);
-    console.log(4);
     const call = result.response.functionCalls()[0];
-    console.log(5);
     if (call) {
       const apiResponse = await functions[call.name](call.args);
       const result2 = await chat.sendMessage([
@@ -92,7 +206,6 @@ const handleGeminiRequest = async (req, res) => {
           },
         },
       ]);
-      console.log(6);
       res.status(200).json({ message: result2.response.text() });
     } else {
       res.status(200).json({ message: result.response.text() });
