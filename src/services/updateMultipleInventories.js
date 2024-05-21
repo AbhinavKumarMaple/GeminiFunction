@@ -2,10 +2,13 @@ const Product = require("../models/Product");
 
 const updateMultipleInventories = async (inventoryUpdates) => {
   try {
+    
     const updateResults = []; 
     console.log(inventoryUpdates)
     for (const [name, quantity] of Object.entries(inventoryUpdates)) {
+      // console.log(name,quantity)
       const product = await Product.findOne({ name });
+      // console.log(product)
       if (!product) {
         updateResults.push({ name, success: false, message: "Product not found" });
         continue;
