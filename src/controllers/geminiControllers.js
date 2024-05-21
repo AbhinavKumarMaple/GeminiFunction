@@ -3,6 +3,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // const { incrementCounter } = require("../services/incrementCounter");
 // const { getCurrentProductNumber } = require("../services/getProductNumber"); 
 const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice } = require("../services/inventoryManagement");
+const { updateMultipleInventories } = require("../services/updateMultipleInventories");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
@@ -215,4 +216,18 @@ const handleGeminiRequest = async (req, res) => {
   }
 };
 
-module.exports = { handleGeminiRequest };
+const updateInventories = async (req,res)=>{
+  try {
+    const { data } = req.body;
+    const result = await updateMultipleInventories(data)
+    if(result.success==true){
+      res.status(200).json({ message: "done" });
+    }else{
+      res.status(200).json({ message: "error" });
+
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+module.exports = { handleGeminiRequest,updateInventories };
