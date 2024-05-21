@@ -3,7 +3,7 @@ const Product = require("../models/Product");
 const updateMultipleInventories = async (inventoryUpdates) => {
   try {
     const updateResults = []; 
-
+    console.log(inventoryUpdates)
     for (const [name, quantity] of Object.entries(inventoryUpdates)) {
       const product = await Product.findOne({ name });
       if (!product) {
