@@ -125,6 +125,7 @@ const getInventory = async (name) => {
 const getProductPrice = async (productName) => {
     try {
         console.log("getProductPrice",(productName))
+        const productName = name.toLocaleLowerCase()
 
       const product = await Product.findOne({ name: productName });
       console.log("getProductPrice",product)
