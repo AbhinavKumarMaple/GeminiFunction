@@ -58,7 +58,7 @@ const createProductFunctionDeclaration = {
     properties: {
       name: {
         type: "STRING",
-        description: "Name of the product",
+        description: "Name of the product in english",
       },
       price: {
         type: "NUMBER",
@@ -81,7 +81,7 @@ const increaseInventoryFunctionDeclaration = {
     properties: {
       name: {
         type: "STRING",
-        description: "Name of the product",
+        description: "Name of the product in english",
       },
       quantity: {
         type: "NUMBER",
@@ -100,7 +100,7 @@ const decreaseInventoryFunctionDeclaration = {
     properties: {
       name: {
         type: "STRING",
-        description: "Name of the product",
+        description: "Name of the product in english",
       },
       quantity: {
         type: "NUMBER",
@@ -119,7 +119,7 @@ const getInventoryFunctionDeclaration = {
     properties: {
       name: {
         type: "STRING",
-        description: "Name of the product",
+        description: "Name of the product in english",
       },
     },
     required: ["name"],
@@ -134,7 +134,7 @@ const updateProductPriceFunctionDeclaration = {
     properties: {
       name: {
         type: "STRING",
-        description: "Name of the product",
+        description: "Name of the product in english",
       },
       newPrice: {
         type: "NUMBER",
