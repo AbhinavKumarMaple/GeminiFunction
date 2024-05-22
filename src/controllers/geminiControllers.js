@@ -9,35 +9,8 @@ require("dotenv").config();
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 // Existing function declarations
-const decrementCounterFunctionDeclaration = {
-  name: "decrementCounter",
-  parameters: {
-    type: "NUMBER",
-    description: "decrement the number of the product",
-    properties: {
-      number: {
-        type: "NUMBER",
-        description: "number which will be use to decrement",
-      },
-    },
-    required: ["number"],
-  },
-};
 
-const incrementCounterFunctionDeclaration = {
-  name: "incrementCounter",
-  parameters: {
-    type: "NUMBER",
-    description: "increment the number of the product",
-    properties: {
-      number: {
-        type: "NUMBER",
-        description: "number which will be use to increment",
-      },
-    },
-    required: ["number"],
-  },
-};
+
 
 const getCurrentProductNumberFunctionDeclaration = {
   name: "getCurrentProductNumber",
@@ -148,11 +121,11 @@ const getProductPriceFunctionDeclaration = {
   name: "getProductPrice",
   parameters: {
     type: "object",
-    description: "Retrieve the price of a specified product by its name",
+    description: "Retrieve the price of a specified product by its name in english",
     properties: {
       productName: {
         type: "string",
-        description: "The name of the product in english",
+        description: "The name of the product in english if its a fruit give its english name",
       },
     },
     required: ["productName"],
@@ -160,31 +133,33 @@ const getProductPriceFunctionDeclaration = {
 };
 
 const functions = {
-  decrementCounter: ({ number }) => {
-    return decrementCounter(number);
-  },
-  incrementCounter: ({ number }) => {
-    return incrementCounter(number);
-  },
-  getCurrentProductNumber: () => {
-    return getCurrentProductNumber();
-  },
   createProduct: ({ name, price, inventory }) => {
+    console.log("createProduct")
     return createProduct(name, price, inventory);
   },
   increaseInventory: ({ name, quantity }) => {
+    console.log("increaseInventory")
+
     return increaseInventory(name, quantity);
   },
   decreaseInventory: ({ name, quantity }) => {
+    console.log("decreaseInventory")
+
     return decreaseInventory(name, quantity);
   },
   getInventory: ({ name }) => {
+    console.log("getInventory")
+
     return getInventory(name);
   },
   updateProductPrice: ({ name, newPrice }) => {
+    console.log("updateProductPrice")
+
     return updateProductPrice(name, newPrice);
   },
   getProductPrice: ({ productName }) => {
+    console.log("getProductPrice")
+
     return getProductPrice(productName);
   },
 };
@@ -193,8 +168,6 @@ const generativeModel = genAI.getGenerativeModel({
   model: "gemini-1.0-pro",
   tools: {
     functionDeclarations: [
-      decrementCounterFunctionDeclaration,
-      incrementCounterFunctionDeclaration,
       getCurrentProductNumberFunctionDeclaration,
       createProductFunctionDeclaration,
       increaseInventoryFunctionDeclaration,
