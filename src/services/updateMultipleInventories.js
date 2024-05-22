@@ -8,7 +8,7 @@ const updateMultipleInventories = async (inventoryUpdates) => {
     for (const [name, quantity] of Object.entries(inventoryUpdates)) {
       // console.log(name,quantity)
       const product = await Product.findOne({ name });
-      // console.log(product)
+      console.log(product)
       if (!product) {
         updateResults.push({ name, success: false, message: "Product not found" });
         continue;

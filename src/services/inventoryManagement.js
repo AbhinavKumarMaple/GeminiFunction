@@ -2,12 +2,14 @@ const Product = require("../models/Product");
 
 const updateProductPrice = async (name, newPrice) => {
     try {
+        const productName = name.toLocaleLowerCase()
+        console.log(productName)
       const priceValue = Number(newPrice);
       if (isNaN(priceValue) || priceValue <= 0) {
         return { success: false, message: "Invalid price" };
       }
   
-      const product = await Product.findOne({ name });
+      const product = await Product.findOne({ name:productName });
       if (!product) {
         return { success: false, message: "Product not found" };
       }
@@ -16,7 +18,7 @@ const updateProductPrice = async (name, newPrice) => {
       product.lastModified = Date.now();
       await product.save();
   
-      console.log(`Updated price for ${name} to ${priceValue}`);
+      console.log(`Updated price for ${productName} to ${priceValue}`);
       return { success: true, price: product.price };
     } catch (error) {
       console.error("Error updating product price:", error);
@@ -26,9 +28,11 @@ const updateProductPrice = async (name, newPrice) => {
 
 const createProduct = async (name, price, inventory = 0) => {
   try {
-    const product = new Product({ name, price, inventory });
+    const productName = name.toLocaleLowerCase()
+
+    const product = new Product({ productName, price, inventory });
     await product.save();
-    console.log(`Product ${name} created with price ${price} and inventory ${inventory}`);
+    console.log(`Product ${productName} created with price ${price} and inventory ${inventory}`);
     return { success: true, product };
   } catch (error) {
     console.error("Error creating product:", error);
@@ -41,12 +45,14 @@ const createProduct = async (name, price, inventory = 0) => {
 // Increase inventory
 const increaseInventory = async (name, quantity) => {
   try {
+    const productName = name.toLocaleLowerCase()
+
     const incrementValue = Number(quantity);
     if (isNaN(incrementValue) || incrementValue <= 0) {
       return { success: false, message: "Invalid quantity" };
     }
 
-    const product = await Product.findOne({ name });
+    const product = await Product.findOne({ productName });
     if (!product) {
       return { success: false, message: "Product not found" };
     }
@@ -55,7 +61,7 @@ const increaseInventory = async (name, quantity) => {
     product.lastModified = Date.now();
     await product.save();
 
-    console.log(`Increased inventory for ${name} by ${incrementValue}. New inventory: ${product.inventory}`);
+    console.log(`Increased inventory for ${productName} by ${incrementValue}. New inventory: ${product.inventory}`);
     return { success: true, inventory: product.inventory };
   } catch (error) {
     console.error("Error increasing inventory:", error);
@@ -66,12 +72,13 @@ const increaseInventory = async (name, quantity) => {
 // Decrease inventory
 const decreaseInventory = async (name, quantity) => {
   try {
+    const productName = name.toLocaleLowerCase()
     const decrementValue = Number(quantity);
     if (isNaN(decrementValue) || decrementValue <= 0) {
       return { success: false, message: "Invalid quantity" };
     }
 
-    const product = await Product.findOne({ name });
+    const product = await Product.findOne({ productName });
     if (!product) {
       return { success: false, message: "Product not found" };
     }
@@ -84,7 +91,7 @@ const decreaseInventory = async (name, quantity) => {
     product.lastModified = Date.now();
     await product.save();
 
-    console.log(`Decreased inventory for ${name} by ${decrementValue}. New inventory: ${product.inventory}`);
+    console.log(`Decreased inventory for ${productName} by ${decrementValue}. New inventory: ${product.inventory}`);
     return { success: true, inventory: product.inventory };
   } catch (error) {
     console.error("Error decreasing inventory:", error);
@@ -95,7 +102,8 @@ const decreaseInventory = async (name, quantity) => {
 // Get current inventory
 const getInventory = async (name) => {
   try {
-    const product = await Product.findOne({ name });
+    const productName = name.toLocaleLowerCase()
+    const product = await Product.findOne({ productName });
     if (!product) {
       return { success: false, message: "Product not found" };
     }
