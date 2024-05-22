@@ -29,8 +29,9 @@ const updateProductPrice = async (name, newPrice) => {
 const createProduct = async (name, price, inventory = 0) => {
   try {
     const productName = name.toLocaleLowerCase()
+    console.log("createProduct",(name, price, inventory))
 
-    const product = new Product({ productName, price, inventory });
+    const product = new Product({ name:productName, price, value:inventory });
     await product.save();
     console.log(`Product ${productName} created with price ${price} and inventory ${inventory}`);
     return { success: true, product };
@@ -46,13 +47,14 @@ const createProduct = async (name, price, inventory = 0) => {
 const increaseInventory = async (name, quantity) => {
   try {
     const productName = name.toLocaleLowerCase()
+    console.log("increaseInventory",name, quantity)
 
     const incrementValue = Number(quantity);
     if (isNaN(incrementValue) || incrementValue <= 0) {
       return { success: false, message: "Invalid quantity" };
     }
 
-    const product = await Product.findOne({ productName });
+    const product = await Product.findOne({ name:productName });
     if (!product) {
       return { success: false, message: "Product not found" };
     }
@@ -72,13 +74,15 @@ const increaseInventory = async (name, quantity) => {
 // Decrease inventory
 const decreaseInventory = async (name, quantity) => {
   try {
+    console.log("decreaseInventory",(name, quantity))
+
     const productName = name.toLocaleLowerCase()
     const decrementValue = Number(quantity);
     if (isNaN(decrementValue) || decrementValue <= 0) {
       return { success: false, message: "Invalid quantity" };
     }
 
-    const product = await Product.findOne({ productName });
+    const product = await Product.findOne({ name:productName });
     if (!product) {
       return { success: false, message: "Product not found" };
     }
@@ -102,8 +106,10 @@ const decreaseInventory = async (name, quantity) => {
 // Get current inventory
 const getInventory = async (name) => {
   try {
+    console.log("getInventory",(name))
+
     const productName = name.toLocaleLowerCase()
-    const product = await Product.findOne({ productName });
+    const product = await Product.findOne({ name:productName });
     if (!product) {
       return { success: false, message: "Product not found" };
     }
@@ -118,6 +124,8 @@ const getInventory = async (name) => {
 
 const getProductPrice = async (productName) => {
     try {
+        console.log("getProductPrice",(productName))
+
       const product = await Product.findOne({ name: productName });
       console.log("getProductPrice",product)
       if (!product) {
