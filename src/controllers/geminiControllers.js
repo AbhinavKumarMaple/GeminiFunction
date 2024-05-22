@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // const { decrementCounter } = require("../services/decrementCounter");
 // const { incrementCounter } = require("../services/incrementCounter");
 // const { getCurrentProductNumber } = require("../services/getProductNumber"); 
-const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice } = require("../services/inventoryManagement");
+const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice, getProductPrice } = require("../services/inventoryManagement");
 const { updateMultipleInventories } = require("../services/updateMultipleInventories");
 require("dotenv").config();
 
@@ -144,6 +144,20 @@ const updateProductPriceFunctionDeclaration = {
     required: ["name", "newPrice"],
   },
 };
+const getProductPriceFunctionDeclaration = {
+  name: "getProductPrice",
+  parameters: {
+    type: "object",
+    description: "Retrieve the price of a specified product by its name",
+    properties: {
+      productName: {
+        type: "string",
+        description: "The name of the product in english",
+      },
+    },
+    required: ["productName"],
+  },
+};
 
 const functions = {
   decrementCounter: ({ number }) => {
@@ -170,6 +184,9 @@ const functions = {
   updateProductPrice: ({ name, newPrice }) => {
     return updateProductPrice(name, newPrice);
   },
+  getProductPrice: ({ productName }) => {
+    return getProductPrice(productName);
+  },
 };
 
 const generativeModel = genAI.getGenerativeModel({
@@ -184,6 +201,7 @@ const generativeModel = genAI.getGenerativeModel({
       decreaseInventoryFunctionDeclaration,
       getInventoryFunctionDeclaration,
       updateProductPriceFunctionDeclaration,
+      getProductPriceFunctionDeclaration
     ],
   },
 });

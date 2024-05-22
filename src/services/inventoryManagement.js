@@ -2,8 +2,8 @@ const Product = require("../models/Product");
 
 const updateProductPrice = async (name, newPrice) => {
     try {
-        const productName = name.toLocaleLowerCase()
-        console.log(productName)
+        const productName = name?.toLocaleLowerCase()
+        console.log("updateProductPrice", name, newPrice)
       const priceValue = Number(newPrice);
       if (isNaN(priceValue) || priceValue <= 0) {
         return { success: false, message: "Invalid price" };
@@ -115,4 +115,19 @@ const getInventory = async (name) => {
   }
 };
 
-module.exports = { increaseInventory, decreaseInventory, getInventory, createProduct,updateProductPrice };
+
+const getProductPrice = async (productName) => {
+    try {
+      const product = await Product.findOne({ name: productName });
+      console.log("getProductPrice",product)
+      if (!product) {
+        return { success: false, message: "Product not found" };
+      }
+      return { success: true, price: product.price };
+    } catch (error) {
+      console.error("Error fetching product price:", error);
+      return { success: false, message: "Failed to fetch product price" };
+    }
+  };
+
+module.exports = { increaseInventory, decreaseInventory, getInventory, createProduct,updateProductPrice,getProductPrice };
