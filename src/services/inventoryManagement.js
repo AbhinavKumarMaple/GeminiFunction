@@ -122,10 +122,10 @@ const getInventory = async (name) => {
 };
 
 
-const getProductPrice = async (productName) => {
+const getProductPrice = async (name) => {
     try {
-        console.log("getProductPrice",(productName))
-        const productName = name.toLocaleLowerCase()
+        console.log("getProductPrice",name)
+        const productName = name?.toLocaleLowerCase()
 
       const product = await Product.findOne({ name: productName });
       console.log("getProductPrice",product)
