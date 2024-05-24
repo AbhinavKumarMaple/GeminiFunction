@@ -27,7 +27,7 @@ const createProductFunctionDeclaration = {
   name: "createProduct",
   parameters: {
     type: "OBJECT",
-    description: "Create a new product",
+    description: "Create a new product in english",
     properties: {
       name: {
         type: "STRING",
