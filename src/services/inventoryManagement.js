@@ -31,13 +31,13 @@ const createProduct = async (name, price, inventory = 0) => {
     const productName = name.toLocaleLowerCase()
     console.log("createProduct",(name, price, inventory))
 
-    const product = new Product({ name:productName, price, value:inventory });
+    const product = new Product({ name:productName, price, inventory:inventory });
     await product.save();
     console.log(`Product ${productName} created with price ${price} and inventory ${inventory}`);
     return { success: true, product };
   } catch (error) {
     console.error("Error creating product:", error);
-    return { success: false, message: "Failed to create product" };
+    return { success: false, message: "product already exists" };
   }
 };
 
@@ -122,10 +122,10 @@ const getInventory = async (name) => {
 };
 
 
-const getProductPrice = async (productName) => {
+const getProductPrice = async (name) => {
     try {
-        console.log("getProductPrice",(productName))
-        const productName = name.toLocaleLowerCase()
+        console.log("getProductPrice",name)
+        const productName = name?.toLocaleLowerCase()
 
       const product = await Product.findOne({ name: productName });
       console.log("getProductPrice",product)
