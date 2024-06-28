@@ -11,17 +11,6 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 // Existing function declarations
 
 
-
-const getCurrentProductNumberFunctionDeclaration = {
-  name: "getCurrentProductNumber",
-  parameters: {
-    type: "OBJECT",
-    description: "Retrieve the current product count",
-    properties: {},
-    required: [],
-  },
-};
-
 // New function declarations
 const createProductFunctionDeclaration = {
   name: "createProduct",
@@ -168,7 +157,6 @@ const generativeModel = genAI.getGenerativeModel({
   model: "gemini-1.0-pro",
   tools: {
     functionDeclarations: [
-      getCurrentProductNumberFunctionDeclaration,
       createProductFunctionDeclaration,
       increaseInventoryFunctionDeclaration,
       decreaseInventoryFunctionDeclaration,
