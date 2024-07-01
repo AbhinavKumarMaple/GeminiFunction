@@ -1,16 +1,24 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 // const { decrementCounter } = require("../services/decrementCounter");
 // const { incrementCounter } = require("../services/incrementCounter");
-// const { getCurrentProductNumber } = require("../services/getProductNumber"); 
-const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice, getProductPrice ,deleteProduct} = require("../services/inventoryManagement");
-const { updateMultipleInventories } = require("../services/updateMultipleInventories");
+// const { getCurrentProductNumber } = require("../services/getProductNumber");
+const {
+  increaseInventory,
+  decreaseInventory,
+  getInventory,
+  createProduct,
+  updateProductPrice,
+  getProductPrice,
+  deleteProduct,
+} = require("../services/inventoryManagement");
+const {
+  updateMultipleInventories,
+} = require("../services/updateMultipleInventories");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 // Existing function declarations
-
-
 
 // const getCurrentProductNumberFunctionDeclaration = {
 //   name: "getCurrentProductNumber",
@@ -121,11 +129,13 @@ const getProductPriceFunctionDeclaration = {
   name: "getProductPrice",
   parameters: {
     type: "object",
-    description: "Retrieve the price of a specified product by its name in english",
+    description:
+      "Retrieve the price of a specified product by its name in english",
     properties: {
       productName: {
         type: "string",
-        description: "The name of the product in english if its a fruit give its english name",
+        description:
+          "The name of the product in english if its a fruit give its english name",
       },
     },
     required: ["productName"],
@@ -147,34 +157,33 @@ const deleteProductFunctionDeclaration = {
   },
 };
 
-
 const functions = {
   createProduct: ({ name, price, inventory }) => {
-    console.log("createProduct")
+    console.log("createProduct");
     return createProduct(name, price, inventory);
   },
   increaseInventory: ({ name, quantity }) => {
-    console.log("increaseInventory")
+    console.log("increaseInventory");
 
     return increaseInventory(name, quantity);
   },
   decreaseInventory: ({ name, quantity }) => {
-    console.log("decreaseInventory")
+    console.log("decreaseInventory");
 
     return decreaseInventory(name, quantity);
   },
   getInventory: ({ name }) => {
-    console.log("getInventory")
+    console.log("getInventory");
 
     return getInventory(name);
   },
   updateProductPrice: ({ name, newPrice }) => {
-    console.log("updateProductPrice")
+    console.log("updateProductPrice");
 
     return updateProductPrice(name, newPrice);
   },
   getProductPrice: ({ productName }) => {
-    console.log("getProductPrice")
+    console.log("getProductPrice");
 
     return getProductPrice(productName);
   },
@@ -183,7 +192,6 @@ const functions = {
     return deleteProduct(name);
   },
 };
-
 
 const generativeModel = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
@@ -194,7 +202,8 @@ const generativeModel = genAI.getGenerativeModel({
       decreaseInventoryFunctionDeclaration,
       getInventoryFunctionDeclaration,
       updateProductPriceFunctionDeclaration,
-      getProductPriceFunctionDeclaration
+      getProductPriceFunctionDeclaration,
+      deleteProductFunctionDeclaration,
     ],
   },
 });
@@ -227,19 +236,18 @@ const handleGeminiRequest = async (req, res) => {
   }
 };
 
-const updateInventories = async (req,res)=>{
+const updateInventories = async (req, res) => {
   try {
     const { data } = req.body;
     // console.log("reacttime data", typeof JSON.stringify(data), JSON.parse(JSON.stringify(data)) )
-    const result = await updateMultipleInventories(data)
-    if(result.success==true){
+    const result = await updateMultipleInventories(data);
+    if (result.success == true) {
       res.status(200).json({ message: "done" });
-    }else{
+    } else {
       res.status(200).json({ message: "error" });
-
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
-module.exports = { handleGeminiRequest,updateInventories };
+};
+module.exports = { handleGeminiRequest, updateInventories };
