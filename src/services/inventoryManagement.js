@@ -1,105 +1,111 @@
 const Product = require("../models/Product");
 
-const updateProductPrice = async (name, newPrice) => {
-    try {
-        const productName = name?.toLocaleLowerCase()
-        console.log("updateProductPrice", name, newPrice)
-      const priceValue = Number(newPrice);
-      if (isNaN(priceValue) || priceValue <= 0) {
-        return { success: false, message: "Invalid price" };
-      }
-  
-      const product = await Product.findOne({ name:productName });
-      if (!product) {
-        return { success: false, message: "Product not found" };
-      }
-  
-      product.price = priceValue;
-      product.lastModified = Date.now();
-      await product.save();
-  
-      console.log(`Updated price for ${productName} to ${priceValue}`);
-      return { success: true, price: product.price };
-    } catch (error) {
-      console.error("Error updating product price:", error);
-      return { success: false, message: "Failed to update product price" };
-    }
-  };
-
-const createProduct = async (name, price, inventory = 0) => {
+const logTransaction = async (action, productName) => {
   try {
-    const productName = name.toLocaleLowerCase()
-    console.log("createProduct",(name, price, inventory))
-
-    const product = new Product({ name:productName, price, inventory:inventory });
-    await product.save();
-    console.log(`Product ${productName} created with price ${price} and inventory ${inventory}`);
-    return { success: true, product };
+    const transaction = new Transaction({ action, productName });
+    await transaction.save();
   } catch (error) {
-    console.error("Error creating product:", error);
-    return { success: false, message: "product already exists" };
+    console.error('Error logging transaction:', error);
   }
 };
+const updateProductPrice = async (name, newPrice) => {
+  try {
+    const productName = name.toLowerCase();
+    const priceValue = Number(newPrice);
+    if (isNaN(priceValue) || priceValue <= 0) {
+      return { success: false, message: 'Invalid price' };
+    }
+
+    const product = await Product.findOne({ name: productName });
+    if (!product) {
+      return { success: false, message: 'Product not found' };
+    }
+
+    product.price = priceValue;
+    product.lastModified = Date.now();
+    await product.save();
+
+    await logTransaction('updateProductPrice', productName);
+    console.log(`Updated price for ${productName} to ${priceValue}`);
+    return { success: true, price: product.price };
+  } catch (error) {
+    console.error('Error updating product price:', error);
+    return { success: false, message: 'Failed to update product price' };
+  }
+};
+
+  const createProduct = async (name, price, inventory = 0) => {
+    try {
+      const productName = name.toLowerCase();
+      const product = new Product({ name: productName, price, inventory });
+      await product.save();
+      await logTransaction('create', productName);
+      console.log(`Product ${productName} created with price ${price} and inventory ${inventory}`);
+      return { success: true, product };
+    } catch (error) {
+      console.error('Error creating product:', error);
+      return { success: false, message: 'Product creation failed' };
+    }
+  };
 
 
 
 // Increase inventory
+
 const increaseInventory = async (name, quantity) => {
   try {
-    const productName = name.toLocaleLowerCase()
-    console.log("increaseInventory",name, quantity)
-
+    const productName = name.toLowerCase();
     const incrementValue = Number(quantity);
     if (isNaN(incrementValue) || incrementValue <= 0) {
-      return { success: false, message: "Invalid quantity" };
+      return { success: false, message: 'Invalid quantity' };
     }
 
-    const product = await Product.findOne({ name:productName });
+    const product = await Product.findOne({ name: productName });
     if (!product) {
-      return { success: false, message: "Product not found" };
+      return { success: false, message: 'Product not found' };
     }
 
     product.inventory += incrementValue;
     product.lastModified = Date.now();
     await product.save();
 
+    await logTransaction('increaseInventory', productName);
     console.log(`Increased inventory for ${productName} by ${incrementValue}. New inventory: ${product.inventory}`);
     return { success: true, inventory: product.inventory };
   } catch (error) {
-    console.error("Error increasing inventory:", error);
-    return { success: false, message: "Failed to increase inventory" };
+    console.error('Error increasing inventory:', error);
+    return { success: false, message: 'Failed to increase inventory' };
   }
 };
 
 // Decrease inventory
 const decreaseInventory = async (name, quantity) => {
   try {
-    console.log("decreaseInventory",(name, quantity))
-
-    const productName = name.toLocaleLowerCase()
+    const productName = name.toLowerCase();
     const decrementValue = Number(quantity);
     if (isNaN(decrementValue) || decrementValue <= 0) {
-      return { success: false, message: "Invalid quantity" };
+      return { success: false, message: 'Invalid quantity' };
     }
 
-    const product = await Product.findOne({ name:productName });
+    const product = await Product.findOne({ name: productName });
     if (!product) {
-      return { success: false, message: "Product not found" };
+      return { success: false, message: 'Product not found' };
     }
 
     if (product.inventory < decrementValue) {
-      return { success: false, message: "Insufficient inventory" };
+      return { success: false, message: 'Insufficient inventory' };
     }
 
     product.inventory -= decrementValue;
     product.lastModified = Date.now();
     await product.save();
 
+    await logTransaction('decreaseInventory', productName);
     console.log(`Decreased inventory for ${productName} by ${decrementValue}. New inventory: ${product.inventory}`);
     return { success: true, inventory: product.inventory };
   } catch (error) {
-    console.error("Error decreasing inventory:", error);
-    return { success: false, message: "Failed to decrease inventory" };
+    console.error('Error decreasing inventory:', error);
+    return { success: false, message: 'Failed to decrease inventory' };
   }
 };
 
@@ -142,21 +148,22 @@ const getProductPrice = async (name) => {
 
   const deleteProduct = async (name) => {
     try {
-      const productName = name.toLocaleLowerCase();
-      console.log("deleteProduct", name);
-  
+      const productName = name.toLowerCase();
       const product = await Product.findOne({ name: productName });
       if (!product) {
-        return { success: false, message: "Product not found" };
+        return { success: false, message: 'Product not found' };
       }
   
-      await product.deleteOne(); // Use deleteOne to remove the product
+      await product.deleteOne();
+  
+      await logTransaction('deleteProduct', productName);
       console.log(`Deleted product ${productName}`);
-      return { success: true, message: "Product deleted successfully" };
+      return { success: true, message: 'Product deleted successfully' };
     } catch (error) {
-      console.error("Error deleting product:", error);
-      return { success: false, message: "Failed to delete product" };
+      console.error('Error deleting product:', error);
+      return { success: false, message: 'Failed to delete product' };
     }
   };
+  
   
 module.exports = {deleteProduct, increaseInventory, decreaseInventory, getInventory, createProduct,updateProductPrice,getProductPrice };
