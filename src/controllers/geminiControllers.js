@@ -132,6 +132,22 @@ const getProductPriceFunctionDeclaration = {
   },
 };
 
+const deleteProductFunctionDeclaration = {
+  name: "deleteProduct",
+  parameters: {
+    type: "OBJECT",
+    description: "Delete a product from inventory",
+    properties: {
+      name: {
+        type: "STRING",
+        description: "Name of the product in English",
+      },
+    },
+    required: ["name"],
+  },
+};
+
+
 const functions = {
   createProduct: ({ name, price, inventory }) => {
     console.log("createProduct")
@@ -162,7 +178,12 @@ const functions = {
 
     return getProductPrice(productName);
   },
+  deleteProduct: ({ name }) => {
+    console.log("deleteProduct");
+    return deleteProduct(name);
+  },
 };
+
 
 const generativeModel = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",

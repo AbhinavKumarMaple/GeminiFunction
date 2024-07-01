@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const app = require('./src/app'); // Assuming app logic is in ./src/app.js or similar
+const geminiRouter = require('./controllers/geminivision'); // Replace with correct path to your geminivision router
 const PORT = process.env.PORT || 3000;
 
 const mainApp = express();
@@ -16,6 +17,9 @@ mainApp.use(cors({
 
 // Mount your existing app logic
 mainApp.use('/', app); // Assuming your app logic is mounted at '/'
+
+// Mount your Gemini router
+mainApp.use('/gemini', geminiRouter); // Assuming your gemini router is mounted at '/gemini'
 
 // Basic endpoint for testing
 mainApp.get('/', (req, res) => {
