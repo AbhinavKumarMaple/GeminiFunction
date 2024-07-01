@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const { handleGeminiRequest, updateInventories } = require('../controllers/geminiControllers');
 const { getAllProducts } = require('../services/getAllProducts');
-const { getLast10Transactions } = require('../controllers/transactionsController'); // New controller for transactions
+const {getLast10Transactions } = require('../controllers/transactionsController'); // New controller for transactions
 
 router.post('/', handleGeminiRequest);
 router.post('/realtimeupdate', updateInventories);

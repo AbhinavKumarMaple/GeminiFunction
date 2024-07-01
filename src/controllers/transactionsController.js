@@ -1,4 +1,4 @@
-const Transaction = require('../models/Transaction');
+const Transaction = require('../config/Transaction');
 
 const getLast10Transactions = async (req, res) => {
   try {
