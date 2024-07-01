@@ -145,11 +145,12 @@ const getProductPrice = async (name) => {
       const productName = name.toLocaleLowerCase();
       console.log("deleteProduct", name);
   
-      const product = await Product.findOneAndDelete({ name: productName });
+      const product = await Product.findOne({ name: productName });
       if (!product) {
         return { success: false, message: "Product not found" };
       }
   
+      await product.deleteOne(); // Use deleteOne to remove the product
       console.log(`Deleted product ${productName}`);
       return { success: true, message: "Product deleted successfully" };
     } catch (error) {
@@ -157,4 +158,5 @@ const getProductPrice = async (name) => {
       return { success: false, message: "Failed to delete product" };
     }
   };
+  
 module.exports = {deleteProduct, increaseInventory, decreaseInventory, getInventory, createProduct,updateProductPrice,getProductPrice };

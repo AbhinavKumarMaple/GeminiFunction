@@ -18,17 +18,6 @@ require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
-// Existing function declarations
-
-// const getCurrentProductNumberFunctionDeclaration = {
-//   name: "getCurrentProductNumber",
-//   parameters: {
-//     type: "OBJECT",
-//     description: "Retrieve the current product count",
-//     properties: {},
-//     required: [],
-//   },
-// };
 
 // New function declarations
 const createProductFunctionDeclaration = {
@@ -187,9 +176,14 @@ const functions = {
 
     return getProductPrice(productName);
   },
-  deleteProduct: ({ name }) => {
+  deleteProduct: async ({ name }) => {
     console.log("deleteProduct");
-    return deleteProduct(name);
+    try {
+      return await deleteProduct(name);
+    } catch (error) {
+      console.error("Error in deleteProduct function:", error);
+      return { success: false, message: "Failed to delete product" };
+    }
   },
 };
 
