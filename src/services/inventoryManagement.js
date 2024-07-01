@@ -1,13 +1,5 @@
 const Product = require("../models/Product");
 
-const logTransaction = async (action, productName) => {
-  try {
-    const transaction = new Transaction({ action, productName });
-    await transaction.save();
-  } catch (error) {
-    console.error('Error logging transaction:', error);
-  }
-};
 const updateProductPrice = async (name, newPrice) => {
   try {
     const productName = name.toLowerCase();
@@ -25,7 +17,7 @@ const updateProductPrice = async (name, newPrice) => {
     product.lastModified = Date.now();
     await product.save();
 
-    await logTransaction('updateProductPrice', productName);
+    
     console.log(`Updated price for ${productName} to ${priceValue}`);
     return { success: true, price: product.price };
   } catch (error) {
@@ -39,7 +31,7 @@ const updateProductPrice = async (name, newPrice) => {
       const productName = name.toLowerCase();
       const product = new Product({ name: productName, price, inventory });
       await product.save();
-      await logTransaction('create', productName);
+      
       console.log(`Product ${productName} created with price ${price} and inventory ${inventory}`);
       return { success: true, product };
     } catch (error) {
@@ -69,7 +61,6 @@ const increaseInventory = async (name, quantity) => {
     product.lastModified = Date.now();
     await product.save();
 
-    await logTransaction('increaseInventory', productName);
     console.log(`Increased inventory for ${productName} by ${incrementValue}. New inventory: ${product.inventory}`);
     return { success: true, inventory: product.inventory };
   } catch (error) {
@@ -100,7 +91,7 @@ const decreaseInventory = async (name, quantity) => {
     product.lastModified = Date.now();
     await product.save();
 
-    await logTransaction('decreaseInventory', productName);
+ 
     console.log(`Decreased inventory for ${productName} by ${decrementValue}. New inventory: ${product.inventory}`);
     return { success: true, inventory: product.inventory };
   } catch (error) {
@@ -156,7 +147,7 @@ const getProductPrice = async (name) => {
   
       await product.deleteOne();
   
-      await logTransaction('deleteProduct', productName);
+      
       console.log(`Deleted product ${productName}`);
       return { success: true, message: 'Product deleted successfully' };
     } catch (error) {

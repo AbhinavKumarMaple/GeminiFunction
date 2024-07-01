@@ -18,7 +18,6 @@ mainApp.use(cors({
 // Mount your existing app logic
 mainApp.use('/', app); // Assuming your app logic is mounted at '/'
 
-// Mount your Gemini router
 
 // Basic endpoint for testing
 mainApp.get('/', (req, res) => {
