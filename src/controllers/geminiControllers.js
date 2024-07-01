@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // const { decrementCounter } = require("../services/decrementCounter");
 // const { incrementCounter } = require("../services/incrementCounter");
 // const { getCurrentProductNumber } = require("../services/getProductNumber"); 
-const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice, getProductPrice } = require("../services/inventoryManagement");
+const { increaseInventory, decreaseInventory, getInventory,createProduct,updateProductPrice, getProductPrice ,deleteProduct} = require("../services/inventoryManagement");
 const { updateMultipleInventories } = require("../services/updateMultipleInventories");
 require("dotenv").config();
 
